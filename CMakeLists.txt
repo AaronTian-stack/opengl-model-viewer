@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(opengl_mac)
+project(opengl-model-viewer)
 
 set(CMAKE_CXX_STANDARD 11)
 
@@ -18,6 +18,6 @@ include_directories(dependencies/include)
 file(COPY resources DESTINATION ${dir}/build)
 file(COPY shaders DESTINATION ${dir}/build)
 
-add_executable(opengl_mac ${SOURCE_FILES})
+add_executable(opengl-model-viewer ${SOURCE_FILES})
 
-target_link_libraries(opengl_mac ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/library/libglfw.3.3.dylib)
+target_link_libraries(opengl-model-viewer ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/library/libglfw.3.3.dylib)
