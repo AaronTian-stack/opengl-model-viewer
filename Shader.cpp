@@ -28,7 +28,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
     }
     catch (std::ifstream::failure e)
     {
-        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+        std::cout << "ERROR: SHADER::" << vertexPath << "::" << fragmentPath << "::FILE_NOT_SUCCESFULLY_READ" << std::endl;
     }
     const char* vShaderCode = vertexCode.c_str();
     const char* fShaderCode = fragmentCode.c_str();
@@ -47,10 +47,10 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
     if (!success)
     {
         glGetShaderInfoLog(vertex, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+        std::cout << "ERROR::SHADER::VERTEX::" << vertexPath << "::COMPILATION_FAILED\n" << infoLog << std::endl;
     }
 
-    // similiar for Fragment Shader
+    // similar for Fragment Shader
     fragment = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragment, 1, &fShaderCode, NULL);
     glCompileShader(fragment);
@@ -58,8 +58,8 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
     glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
     if (!success)
     {
-        glGetShaderInfoLog(vertex, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+        glGetShaderInfoLog(fragment, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::FRAGMENT::" << fragmentPath << "::COMPILATION_FAILED\n" << infoLog << std::endl;
     }
 
     // shader Program
@@ -97,7 +97,11 @@ void Shader::setFloat(const std::string& name, float value) const
 {
     glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
 }
+void Shader::setVec3(const std::string &name, float v1, float v2, float v3) const {
+    glUniform3f(glGetUniformLocation(ID, name.c_str()), v1, v2, v3);
+}
 void Shader::setVec4(const std::string& name, float v1, float v2, float v3, float v4) const
 {
     glUniform4f(glGetUniformLocation(ID, name.c_str()), v1, v2, v3, v4);
 }
+

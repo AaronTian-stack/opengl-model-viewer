@@ -17,25 +17,25 @@ int main()
 {
 
     FrameCounter frameCounter;
-    Shader colorShader("Shaders/color.vert", "Shaders/color.frag");
-    Shader basicShader("Shaders/basic.vert", "Shaders/basic.frag");
+    Shader colorShader("shaders/color.vert", "shaders/color.frag");
+    Shader basicShader("shaders/basic.vert", "shaders/basic.frag");
 
     float vertices[] = {
-    // positions            // colors
-     0.5f,  0.5f, 0.0f,     1.0f, 0.0f, 0.0f,   // top right
-     0.5f, -0.5f, 0.0f,     0.0f, 1.0f, 0.0f,   // bottom right
-    -0.5f, -0.5f, 0.0f,     0.0f, 0.0f, 1.0f,   // bottom left
-    -0.5f,  0.5f, 0.0f,     1.0f, 0.0f, 0.0f,   // top left 
+    // positions RECTANGLE           // colors
+     0.5f,  0.5f, 0.0f,     //1.0f, 0.0f, 0.0f,   // top right
+     0.5f, -0.5f, 0.0f,     //0.0f, 1.0f, 0.0f,   // bottom right
+    -0.5f, -0.5f, 0.0f,     //0.0f, 0.0f, 1.0f,   // bottom left
+    -0.5f,  0.5f, 0.0f,     //1.0f, 0.0f, 0.0f,   // top left
     };
     unsigned int indices[] = {
         0, 1, 3,   // first triangle
         1, 2, 3    // second triangle
     };
 
-    Model test(GL_STATIC_COPY, vertices, sizeof(vertices), indices, sizeof(indices), true);
+    Model rect(GL_STATIC_COPY, vertices, sizeof(vertices), indices, sizeof(indices));
 
     float vertices1[] = {
-    // positions            // colors
+    // positions TRIANGLE           // colors
     -0.8f, -0.8f, 0.0f,     1.0f, 0.0f, 0.0f,
      0.8f, -0.8f, 0.0f,     0.0f, 1.0f, 0.0f,
      0.0f,  0.8f, 0.0f,     0.0f, 0.0f, 1.0f,
@@ -46,6 +46,9 @@ int main()
 
     Model tri(GL_STATIC_COPY, vertices1, sizeof(vertices1), indices1, sizeof(indices1), true);
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     while (!glfwWindowShouldClose(window.window))
     {
         processInput(window.window);
@@ -54,12 +57,12 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        //colorShader.setVec4("color", 1.0f, 0.0f, 0.0f, 1.0f);
-        colorShader.use(); // activate shader
-        test.draw();
-
-        //colorShader.setVec4("color", 1.0f, 1.0f, 0.0f, 1.0f);   
+        colorShader.use();
         tri.draw();
+
+        basicShader.use();
+        basicShader.setVec4("color", 1.0f, 0.0f, 0.0f, 0.5f);
+        rect.draw();
 
         glfwSwapBuffers(window.window);
         glfwPollEvents();

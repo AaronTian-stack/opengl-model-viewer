@@ -11,7 +11,6 @@ using namespace std;
 */
 Model::Model(GLuint drawMode, float vertices[], unsigned int vert_count, unsigned int indices[], unsigned int ind_count, bool color)
 {
-
 	this->vertices = vertices;
 	this->indices = indices;
 

@@ -12,7 +12,7 @@ public:
 	float *vertices;
 	unsigned int *indices;
 
-	Model(GLuint drawMode, float vertices[], unsigned int vert_count, unsigned int indices[], unsigned int ind_count) 
+	Model(GLuint drawMode, float vertices[], unsigned int vert_count, unsigned int indices[], unsigned int ind_count)
 	: Model(drawMode, vertices, vert_count, indices, ind_count, false){};
 	
 	Model(GLuint drawMode, float vertices[], unsigned int vert_count, unsigned int indices[], unsigned int ind_count, bool color);
