@@ -1,6 +1,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
+
 #include "FrameCounter.h"
 #include "Model.h"
 #include "Shader.h"
@@ -15,6 +19,16 @@ Window window(800, 600, framebuffer_size_callback);
 
 int main()
 {
+
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplGlfw_InitForOpenGL(window.window, true);          // Second param install_callback=true will install GLFW callbacks and chain to existing ones.
+    ImGui_ImplOpenGL3_Init();
 
     FrameCounter frameCounter;
     Shader colorShader("shaders/color.vert", "shaders/color.frag");
@@ -51,8 +65,39 @@ int main()
 
     while (!glfwWindowShouldClose(window.window))
     {
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        bool info = false;
+        ImGui::Begin("Model Viewer", nullptr, ImGuiWindowFlags_AlwaysUseWindowPadding);
+        if (ImGui::BeginMainMenuBar())
+        {
+            if (ImGui::MenuItem("Quit")) {
+                glfwSetWindowShouldClose(window.window, true);
+            }
+            if (ImGui::MenuItem("Info")) {
+                info = true;
+            }
+            ImGui::EndMainMenuBar();
+        }
+
+        if (info)
+        {
+            ImGui::OpenPopup("popup");
+        }
+
+        if (ImGui::BeginPopup("popup"))
+        {
+            ImGui::Text("Made by Aaron Tian \n2023");
+            ImGui::EndPopup();
+        }
+
+        ImGui::Text("FPS: %0.0lf", ImGui::GetIO().Framerate);
+        ImGui::End();
+
         processInput(window.window);
-        frameCounter.update();
+        frameCounter.update(false);
         
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -64,9 +109,16 @@ int main()
         basicShader.setVec4("color", 1.0f, 0.0f, 0.0f, 0.5f);
         rect.draw();
 
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
         glfwSwapBuffers(window.window);
         glfwPollEvents();
     }
+
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
     glfwTerminate();
     return 0;

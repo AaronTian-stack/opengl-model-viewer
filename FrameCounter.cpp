@@ -10,15 +10,19 @@ FrameCounter::FrameCounter()
 	frameCount = 0;
 }
 
-void FrameCounter::update()
-{
-	double currentTime = glfwGetTime();
-	frameCount++;
-	if (currentTime - previousTime >= 1.0)
-	{
-		std::cout << frameCount << "\n";
+void FrameCounter::update(bool print) {
+    double currentTime = glfwGetTime();
+    frameCount++;
+    if (currentTime - previousTime >= 1.0)
+    {
+        if (print)
+            std::cout << frameCount << "\n";
 
-		frameCount = 0;
-		previousTime = currentTime;
-	}
+        frameCount = 0;
+        previousTime = currentTime;
+    }
+}
+
+void FrameCounter::update() {
+    update(true);
 }
