@@ -6,7 +6,7 @@
 #include "imgui/imgui_impl_opengl3.h"
 
 #include "FrameCounter.h"
-#include "Model.h"
+#include "Mesh.h"
 #include "Shader.h"
 #include "Window.h"
 
@@ -33,47 +33,65 @@ int main()
     FrameCounter frameCounter;
     Shader colorShader("shaders/color.vert", "shaders/color.frag");
     Shader basicShader("shaders/basic.vert", "shaders/basic.frag");
+    Shader texColorShader("shaders/tex_color.vert", "shaders/tex_color.frag");
 
-    float vertices[] = {
-    // positions RECTANGLE           // colors
-     0.5f,  0.5f, 0.0f,     //1.0f, 0.0f, 0.0f,   // top right
-     0.5f, -0.5f, 0.0f,     //0.0f, 1.0f, 0.0f,   // bottom right
-    -0.5f, -0.5f, 0.0f,     //0.0f, 0.0f, 1.0f,   // bottom left
-    -0.5f,  0.5f, 0.0f,     //1.0f, 0.0f, 0.0f,   // top left
+    float vertices_rect_basic[] = {
+    // positions RECTANGLE
+     0.7f,  0.7f, 0.0f,
+     0.7f, -0.3f, 0.0f,
+    -0.3f, -0.3f, 0.0f,
+    -0.3f,  0.7f, 0.0f,
     };
-    unsigned int indices[] = {
+
+    float vertices_rect_tex[] = {
+            // positions                        // colors                       // texture coords
+            0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
+            0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
+            -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
+            -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f,    // top left
+    };
+    unsigned int indices_rect[] = {
         0, 1, 3,   // first triangle
         1, 2, 3    // second triangle
     };
 
-    Model rect(GL_STATIC_COPY, vertices, sizeof(vertices), indices, sizeof(indices));
+    Mesh rectBasic(GL_STATIC_COPY, vertices_rect_basic, sizeof(vertices_rect_basic),
+                   indices_rect, sizeof(indices_rect));
 
-    float vertices1[] = {
+    Mesh rect(GL_STATIC_COPY, vertices_rect_tex, sizeof(vertices_rect_tex),
+              indices_rect, sizeof(indices_rect), true, "resources/brick.jpg");
+
+    float vertices_tri[] = {
     // positions TRIANGLE           // colors
     -0.8f, -0.8f, 0.0f,     1.0f, 0.0f, 0.0f,
      0.8f, -0.8f, 0.0f,     0.0f, 1.0f, 0.0f,
      0.0f,  0.8f, 0.0f,     0.0f, 0.0f, 1.0f,
-};  
-    unsigned int indices1[] = {
+    };
+    unsigned int indices_tri[] = {
         0, 1, 2,   // first triangle
     };
 
-    Model tri(GL_STATIC_COPY, vertices1, sizeof(vertices1), indices1, sizeof(indices1), true);
+    Mesh tri(GL_STATIC_COPY, vertices_tri, sizeof(vertices_tri), indices_tri, sizeof(indices_tri), true);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    float color[4] = { 0, 0, 0, 0.5f};
+
     while (!glfwWindowShouldClose(window.window))
     {
+        glfwSetWindowTitle(window.window, ("OpenGL Mesh Viewer | FPS: " + to_string(frameCounter.fps)).c_str());
+
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
         bool info = false;
-        ImGui::Begin("Model Viewer", nullptr, ImGuiWindowFlags_AlwaysUseWindowPadding);
+        ImGui::Begin("Mesh Viewer", nullptr);
         if (ImGui::BeginMainMenuBar())
         {
-            if (ImGui::MenuItem("Quit")) {
+            if (ImGui::MenuItem("Quit"))
+            {
                 glfwSetWindowShouldClose(window.window, true);
             }
             if (ImGui::MenuItem("Info")) {
@@ -93,7 +111,11 @@ int main()
             ImGui::EndPopup();
         }
 
-        ImGui::Text("FPS: %0.0lf", ImGui::GetIO().Framerate);
+        if (ImGui::CollapsingHeader("Color"))
+        {
+            ImGui::ColorPicker4("Color", color);
+        }
+        
         ImGui::End();
 
         processInput(window.window);
@@ -105,9 +127,12 @@ int main()
         colorShader.use();
         tri.draw();
 
-        basicShader.use();
-        basicShader.setVec4("color", 1.0f, 0.0f, 0.0f, 0.5f);
+        texColorShader.use();
         rect.draw();
+
+        basicShader.use();
+        basicShader.setVec4("color", color[0], color[1], color[2], color[3]);
+        rectBasic.draw();
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

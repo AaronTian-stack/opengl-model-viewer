@@ -4,14 +4,13 @@
 
 struct FrameCounter
 {
-	int frameCount;
-	FrameCounter();
+    int fps;
+    FrameCounter();
 
-	void update();
-    void update(bool print);
+    int update();
+    int update(bool print);
 
-    std::string toString();
-
-private:
-	double previousTime;
+    private:
+        int frameCount;
+	    double previousTime;
 };
