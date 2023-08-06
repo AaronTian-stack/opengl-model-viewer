@@ -1422,7 +1422,7 @@ static void ShowDemoWindowWidgets()
                 "/*\n"
                 " The Pentium F00F bug, shorthand for F0 0F C7 C8,\n"
                 " the hexadecimal encoding of one offending instruction,\n"
-                " more formally, the invalid operand with locked CMPXCHG8B\n"
+                " more formally, the invalid operand with cursorLocked CMPXCHG8B\n"
                 " instruction bug, is a design flaw in the majority of\n"
                 " Intel Pentium, Pentium MMX, and Pentium OverDrive\n"
                 " processors (all in the P5 microarchitecture).\n"
@@ -8040,7 +8040,7 @@ void ShowExampleAppDocuments(bool* p_open)
     static ImVector<MyDocument*> close_queue;
     if (close_queue.empty())
     {
-        // Close queue is locked once we started a popup
+        // Close queue is cursorLocked once we started a popup
         for (int doc_n = 0; doc_n < app.Documents.Size; doc_n++)
         {
             MyDocument* doc = &app.Documents[doc_n];

@@ -1061,7 +1061,7 @@ struct IMGUI_API ImGuiMenuColumns
     ImU32       NextTotalWidth;
     ImU16       Spacing;
     ImU16       OffsetIcon;         // Always zero for now
-    ImU16       OffsetLabel;        // Offsets are locked in Update()
+    ImU16       OffsetLabel;        // Offsets are cursorLocked in Update()
     ImU16       OffsetShortcut;
     ImU16       OffsetMark;
     ImU16       Widths[4];          // Width of:   Icon, Label, Shortcut, Mark  (accumulators for current frame)
@@ -1614,7 +1614,7 @@ struct ImGuiViewportP : public ImGuiViewport
     ImGuiViewportP()    { DrawListsLastFrame[0] = DrawListsLastFrame[1] = -1; DrawLists[0] = DrawLists[1] = NULL; }
     ~ImGuiViewportP()   { if (DrawLists[0]) IM_DELETE(DrawLists[0]); if (DrawLists[1]) IM_DELETE(DrawLists[1]); }
 
-    // Calculate work rect pos/size given a set of offset (we have 1 pair of offset for rect locked from last frame data, and 1 pair for currently building rect)
+    // Calculate work rect pos/size given a set of offset (we have 1 pair of offset for rect cursorLocked from last frame data, and 1 pair for currently building rect)
     ImVec2  CalcWorkRectPos(const ImVec2& off_min) const                            { return ImVec2(Pos.x + off_min.x, Pos.y + off_min.y); }
     ImVec2  CalcWorkRectSize(const ImVec2& off_min, const ImVec2& off_max) const    { return ImVec2(ImMax(0.0f, Size.x - off_min.x + off_max.x), ImMax(0.0f, Size.y - off_min.y + off_max.y)); }
     void    UpdateWorkRect()            { WorkPos = CalcWorkRectPos(WorkOffsetMin); WorkSize = CalcWorkRectSize(WorkOffsetMin, WorkOffsetMax); } // Update public fields
@@ -2464,7 +2464,7 @@ struct IMGUI_API ImGuiTabBar
     ImRect              BarRect;
     float               CurrTabsContentsHeight;
     float               PrevTabsContentsHeight; // Record the height of contents submitted below the tab bar
-    float               WidthAllTabs;           // Actual width of all tabs (locked during layout)
+    float               WidthAllTabs;           // Actual width of all tabs (cursorLocked during layout)
     float               WidthAllTabsIdeal;      // Ideal width if all tabs were visible and not clipped
     float               ScrollingAnim;
     float               ScrollingTarget;
@@ -2481,7 +2481,7 @@ struct IMGUI_API ImGuiTabBar
     ImS16               TabsActiveCount;        // Number of tabs submitted this frame.
     ImS16               LastTabItemIdx;         // Index of last BeginTabItem() tab for use by EndTabItem()
     float               ItemSpacingY;
-    ImVec2              FramePadding;           // style.FramePadding locked at the time of BeginTabBar()
+    ImVec2              FramePadding;           // style.FramePadding cursorLocked at the time of BeginTabBar()
     ImVec2              BackupCursorPos;
     ImGuiTextBuffer     TabsNames;              // For non-docking tab bar we re-append names in a contiguous buffer.
 
@@ -2506,7 +2506,7 @@ typedef ImU16 ImGuiTableDrawChannelIdx;
 struct ImGuiTableColumn
 {
     ImGuiTableColumnFlags   Flags;                          // Flags after some patching (not directly same as provided by user). See ImGuiTableColumnFlags_
-    float                   WidthGiven;                     // Final/actual width visible == (MaxX - MinX), locked in TableUpdateLayout(). May be > WidthRequest to honor minimum width, may be < WidthRequest to honor shrinking columns down in tight space.
+    float                   WidthGiven;                     // Final/actual width visible == (MaxX - MinX), cursorLocked in TableUpdateLayout(). May be > WidthRequest to honor minimum width, may be < WidthRequest to honor shrinking columns down in tight space.
     float                   MinX;                           // Absolute positions
     float                   MaxX;
     float                   WidthRequest;                   // Master width absolute value when !(Flags & _WidthStretch). When Stretch this is derived every frame from StretchWeight in TableUpdateLayout()
@@ -2997,7 +2997,7 @@ namespace ImGui
     // [EXPERIMENTAL] High-Level: Input Access functions w/ support for Key/Input Ownership
     // - Important: legacy IsKeyPressed(ImGuiKey, bool repeat=true) _DEFAULTS_ to repeat, new IsKeyPressed() requires _EXPLICIT_ ImGuiInputFlags_Repeat flag.
     // - Expected to be later promoted to public API, the prototypes are designed to replace existing ones (since owner_id can default to Any == 0)
-    // - Specifying a value for 'ImGuiID owner' will test that EITHER the key is NOT owned (UNLESS locked), EITHER the key is owned by 'owner'.
+    // - Specifying a value for 'ImGuiID owner' will test that EITHER the key is NOT owned (UNLESS cursorLocked), EITHER the key is owned by 'owner'.
     //   Legacy functions use ImGuiKeyOwner_Any meaning that they typically ignore ownership, unless a call to SetKeyOwner() explicitly used ImGuiInputFlags_LockThisFrame or ImGuiInputFlags_LockUntilRelease.
     // - Binding generators may want to ignore those for now, or suffix them with Ex() until we decide if this gets moved into public API.
     IMGUI_API bool              IsKeyDown(ImGuiKey key, ImGuiID owner_id);

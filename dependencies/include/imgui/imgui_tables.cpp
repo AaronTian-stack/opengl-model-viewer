@@ -1615,7 +1615,7 @@ ImGuiTableColumnFlags ImGui::TableGetColumnFlags(int column_n)
 
 // Return the cell rectangle based on currently known height.
 // - Important: we generally don't know our row height until the end of the row, so Max.y will be incorrect in many situations.
-//   The only case where this is correct is if we provided a min_row_height to TableNextRow() and don't go below it, or in TableEndRow() when we locked that height.
+//   The only case where this is correct is if we provided a min_row_height to TableNextRow() and don't go below it, or in TableEndRow() when we cursorLocked that height.
 // - Important: if ImGuiTableFlags_PadOuterX is set but ImGuiTableFlags_PadInnerX is not set, the outer-most left and right
 //   columns report a small offset so their CellBgRect can extend up to the outer border.
 //   FIXME: But the rendering code in TableEndRow() nullifies that with clamping required for scrolling.
@@ -1986,7 +1986,7 @@ void ImGui::TableBeginCell(ImGuiTable* table, int column_n)
     // Start position is roughly ~~ CellRect.Min + CellPadding + Indent
     float start_x = column->WorkMinX;
     if (column->Flags & ImGuiTableColumnFlags_IndentEnable)
-        start_x += table->RowIndentOffsetX; // ~~ += window.DC.Indent.x - table->HostIndentX, except we locked it for the row.
+        start_x += table->RowIndentOffsetX; // ~~ += window.DC.Indent.x - table->HostIndentX, except we cursorLocked it for the row.
 
     window->DC.CursorPos.x = start_x;
     window->DC.CursorPos.y = table->RowPosY1 + table->CellPaddingY;
@@ -3988,7 +3988,7 @@ void ImGui::NextColumn()
     if (columns->Current > 0)
     {
         // Columns 1+ ignore IndentX (by canceling it out)
-        // FIXME-COLUMNS: Unnecessary, could be locked?
+        // FIXME-COLUMNS: Unnecessary, could be cursorLocked?
         window->DC.ColumnsOffset.x = GetColumnOffset(columns->Current) - window->DC.Indent.x + column_padding;
     }
     else

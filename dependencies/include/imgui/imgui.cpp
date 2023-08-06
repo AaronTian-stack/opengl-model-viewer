@@ -4825,7 +4825,7 @@ static inline int GetWindowDisplayLayer(ImGuiWindow* window)
     return (window->Flags & ImGuiWindowFlags_Tooltip) ? 1 : 0;
 }
 
-// Layer is locked for the root window, however child windows may use a different viewport (e.g. extruding menu)
+// Layer is cursorLocked for the root window, however child windows may use a different viewport (e.g. extruding menu)
 static inline void AddRootWindowToDrawData(ImGuiWindow* window)
 {
     AddWindowToDrawData(window, GetWindowDisplayLayer(window));
@@ -8423,7 +8423,7 @@ bool ImGui::IsAnyMouseDown()
 }
 
 // Return the delta from the initial clicking position while the mouse button is clicked or was just released.
-// This is locked and return 0.0f until the mouse moves past a distance threshold at least once.
+// This is cursorLocked and return 0.0f until the mouse moves past a distance threshold at least once.
 // NB: This is only valid if IsMousePosValid(). backends in theory should always keep mouse position valid when dragging even outside the client window.
 ImVec2 ImGui::GetMouseDragDelta(ImGuiMouseButton button, float lock_threshold)
 {
@@ -8448,7 +8448,7 @@ void ImGui::ResetMouseDragDelta(ImGuiMouseButton button)
 
 // Get desired mouse cursor shape.
 // Important: this is meant to be used by a platform backend, it is reset in ImGui::NewFrame(),
-// updated during the frame, and locked in EndFrame()/Render().
+// updated during the frame, and cursorLocked in EndFrame()/Render().
 // If you use software rendering by setting io.MouseDrawCursor then Dear ImGui will render those for you
 ImGuiMouseCursor ImGui::GetMouseCursor()
 {
@@ -8735,7 +8735,7 @@ static ImGuiWindow* FindBestWheelingWindow(const ImVec2& wheel)
 // Called by NewFrame()
 void ImGui::UpdateMouseWheel()
 {
-    // Reset the locked window if we move the mouse or after the timer elapses.
+    // Reset the cursorLocked window if we move the mouse or after the timer elapses.
     // FIXME: Ideally we could refactor to have one timer for "changing window w/ same axis" and a shorter timer for "changing window or axis w/ other axis" (#3795)
     ImGuiContext& g = *GImGui;
     if (g.WheelingWindow != NULL)
@@ -9000,7 +9000,7 @@ ImGuiID ImGui::GetKeyOwner(ImGuiKey key)
 // TestKeyOwner(..., ID)   : (owner == None || owner == ID)
 // TestKeyOwner(..., None) : (owner == None)
 // TestKeyOwner(..., Any)  : no owner test
-// All paths are also testing for key not being locked, for the rare cases that key have been locked with using ImGuiInputFlags_LockXXX flags.
+// All paths are also testing for key not being cursorLocked, for the rare cases that key have been cursorLocked with using ImGuiInputFlags_LockXXX flags.
 bool ImGui::TestKeyOwner(ImGuiKey key, ImGuiID owner_id)
 {
     if (!IsNamedKeyOrModKey(key))
