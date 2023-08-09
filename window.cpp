@@ -43,10 +43,14 @@ Window::Window(int SCR_WIDTH, int SCR_HEIGHT,
     std::cout<<"Renderer: "<<renderer<<std::endl;
     std::cout<<"OpenGL version supported "<<version<<std::endl;
 
-	// v sync
+    // anti aliasing
+    glfwWindowHint(GLFW_SAMPLES, 4);
+    glEnable(GL_MULTISAMPLE);
+
+    // v sync
 	glfwSwapInterval(1);
 }
 
 float Window::getAspectRatio() const {
-    return float(SCR_WIDTH) / SCR_HEIGHT;
+    return float(SCR_WIDTH) / float(SCR_HEIGHT);
 }

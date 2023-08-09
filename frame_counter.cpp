@@ -2,7 +2,6 @@
 
 #include <GLFW/glfw3.h>
 #include <iostream>
-#include <string>
 
 FrameCounter::FrameCounter() : previousTime(glfwGetTime()){}
 

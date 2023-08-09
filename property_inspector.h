@@ -6,6 +6,9 @@
 #define OPENGL_MODEL_VIEWER_IMGUI_INSPECTOR_H
 
 #include "window.h"
+#include "imgui/imgui.h"
+#include "camera.h"
+#include "drawable_model.h"
 
 struct PropertyInspector {
 
@@ -13,7 +16,11 @@ struct PropertyInspector {
     float rotation[3] = {0, 0, 0};
     float scale[3] = {1, 1, 1};
 
-    void render(Window windowObj);
+    bool wireframe;
+    bool hideReticle = true;
+    bool turntable;
+
+    void render(Window windowObj, Camera& camera, DrawableModel& model);
 
 };
 

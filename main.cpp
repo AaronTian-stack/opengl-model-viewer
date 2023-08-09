@@ -6,13 +6,14 @@
 #include "imgui/imgui_impl_opengl3.h"
 
 #include "frame_counter.h"
-#include "mesh.h"
 #include "shader.h"
 #include "window.h"
 #include "camera.h"
 #include "property_inspector.h"
-
-using namespace std;
+#include "drawable_mesh.h"
+#include "primitives.h"
+#include "drawable_model.h"
+#include "interpolation.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
@@ -27,7 +28,11 @@ Window windowObj(1024, 768,
                  toggleCursor);
 Camera camera(glm::vec3(0.0f, 0.0f, 1.0f));
 FrameCounter frameCounter;
-bool cursorLocked;
+bool fpsMode;
+
+const float reticleSizeMax = 0.01f;
+float reticleSizeTarget = reticleSizeMax;
+float reticleSize;
 
 int main()
 {
@@ -42,17 +47,9 @@ int main()
     ImGui_ImplGlfw_InitForOpenGL(windowObj.window, true);          // Second param install_callback=true will install GLFW callbacks and chain to existing ones.
     ImGui_ImplOpenGL3_Init();
 
-    Shader colorShader("shaders/color.vert", "shaders/color.frag");
     Shader basicShader("shaders/basic.vert", "shaders/basic.frag");
+    Shader texShader("shaders/tex.vert", "shaders/tex.frag");
     Shader texColorShader("shaders/tex_color.vert", "shaders/tex_color.frag");
-
-    float vertices_rect_basic[] = {
-    // positions RECTANGLE
-     0.7f,  0.7f, 0.0f,
-     0.7f, -0.3f, 0.0f,
-    -0.3f, -0.3f, 0.0f,
-    -0.3f,  0.7f, 0.0f,
-    };
 
     float vertices_rect_tex[] = {
             // positions                        //colors                                    // texture coords
@@ -66,27 +63,16 @@ int main()
         1, 2, 3    // second triangle
     };
 
-    //Mesh rectBasic(GL_STATIC_COPY, vertices_rect_basic, sizeof(vertices_rect_basic),
-    //               indices_rect, sizeof(indices_rect));
+    //DrawableMesh rect(GL_STATIC_COPY, vertices_rect_tex, sizeof(vertices_rect_tex),
+     //                 indices_rect, sizeof(indices_rect), true, "resources/plane/textures/debug.png");
 
-    Mesh rect(GL_STATIC_COPY, vertices_rect_tex, sizeof(vertices_rect_tex),
-              indices_rect, sizeof(indices_rect), true, "resources/sacrasliceicon.png");
+    objl::Loader loader;
+    loader.LoadFile("resources/ball.obj");
+    DrawableMesh ball(GL_STATIC_DRAW, loader.LoadedMeshes[0]);
 
-    Mesh rect2(GL_STATIC_COPY, vertices_rect_tex, sizeof(vertices_rect_tex),
-              indices_rect, sizeof(indices_rect), true, "resources/sacrasliceicon.png");
+    DrawableModel drawableModel(GL_STATIC_DRAW, "resources/kind/kind.obj", "resources/kind/textures/");
 
-    float vertices_tri[] = {
-    // positions TRIANGLE           // colors
-    -0.8f, -0.8f, 0.0f,     1.0f, 0.0f, 0.0f, 1.0f,
-     0.8f, -0.8f, 0.0f,     0.0f, 1.0f, 0.0f, 1.0f,
-     0.0f,  0.8f, 0.0f,     0.0f, 0.0f, 1.0f, 1.0f,
-    };
-    unsigned int indices_tri[] = {
-        0, 1, 2,   // first triangle
-    };
-
-    //Mesh tri(GL_STATIC_COPY, vertices_tri, sizeof(vertices_tri), indices_tri, sizeof(indices_tri), true);
-
+    glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -94,28 +80,33 @@ int main()
 
     while (!glfwWindowShouldClose(windowObj.window))
     {
-        glfwSetWindowTitle(windowObj.window, ("OpenGL Mesh Viewer | FPS: " + to_string(frameCounter.fps)).c_str());
+        glfwSetWindowTitle(windowObj.window, ("OpenGL Model Viewer | FPS: " + std::to_string(frameCounter.fps)).c_str());
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        propertyInspector.render(windowObj);
-
         processInput(windowObj.window);
+
+        propertyInspector.render(windowObj, camera, drawableModel);
+
+        camera.Update(frameCounter.deltaTime);
+
         frameCounter.update(false);
         
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        //colorShader.use();
-        //tri.draw();
+        reticleSize = Interpolation::Linear(reticleSize, reticleSizeTarget, 0.1f);
 
         glm::mat4 model = glm::mat4(1.0f);
         auto position = propertyInspector.position;
         model = glm::translate(model, glm::vec3(position[0], position[1], position[2]));
         auto rotation = propertyInspector.rotation;
         model = glm::rotate(model, glm::radians(rotation[0]), glm::vec3(1.0f, 0.0f, 0.0f));
+        if (propertyInspector.turntable)
+            rotation[1] += frameCounter.deltaTime * 10.0f;
+        rotation[1] = std::fmodf(rotation[1], 360.0f);
         model = glm::rotate(model, glm::radians(rotation[1]), glm::vec3(0.0f, 1.0f, 0.0f));
         model = glm::rotate(model, glm::radians(rotation[2]), glm::vec3(0.0f, 0.0f, 1.0f));
         auto scale = propertyInspector.scale;
@@ -123,15 +114,29 @@ int main()
 
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), windowObj.getAspectRatio(), 0.1f, 100.0f);
 
-        texColorShader.use();
-        texColorShader.setMat4("model", model);
-        texColorShader.setMat4("view", camera.GetViewMatrix());
+        /*texColorShader.use();
+        texColorShader.setMat4("model", glm::mat4(1.0f));
+        texColorShader.setMat4("view", camera.GetViewMatrix(!fpsMode));
         texColorShader.setMat4("projection", projection);
-        rect.draw();
+        rect.Draw();*/
 
-        //basicShader.use();
-        //basicShader.setVec4("color", color[0], color[1], color[2], color[3]);
-        //rectBasic.draw();
+        texShader.use();
+        texShader.setMat4("model", model);
+        texShader.setMat4("view", camera.GetViewMatrix(!fpsMode));
+        texShader.setMat4("projection", projection);
+        drawableModel.Draw();
+
+        basicShader.use();
+        basicShader.setMat4("view", camera.GetViewMatrix(!fpsMode));
+        basicShader.setMat4("projection", projection);
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, camera.TargetSmooth);
+
+        float factor = propertyInspector.hideReticle ? 0 : 1;
+        model = glm::scale(model, glm::vec3(reticleSize * factor));
+        basicShader.setVec4("color", 1, 0, 0, 1.0f);
+        basicShader.setMat4("model", model);
+        ball.Draw();
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -148,13 +153,28 @@ int main()
     return 0;
 }
 
+bool firstMouse = true;
+
+void focus(GLFWwindow* window)
+{
+    reticleSizeTarget = 0;
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
+
+void unfocus(GLFWwindow* window)
+{
+    reticleSizeTarget = reticleSizeMax;
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    firstMouse = true;
+}
+
 void toggleCursor(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if (key == GLFW_KEY_GRAVE_ACCENT && action == GLFW_PRESS) {
-        cursorLocked = !cursorLocked;
-        if (cursorLocked)
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        fpsMode = !fpsMode;
+        if (fpsMode)
+            focus(window);
         else
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            unfocus(window);
     }
 }
 
@@ -163,26 +183,32 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    ImGuiIO& io = ImGui::GetIO();
+    if (!fpsMode && !io.WantCaptureMouse)
+    {
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) || glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_2))
+            focus(window);
+        else if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED)
+            unfocus(window);
+    }
 
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera.ProcessKeyboard(FORWARD, frameCounter.deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera.ProcessKeyboard(LEFT, frameCounter.deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera.ProcessKeyboard(BACKWARD, frameCounter.deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camera.ProcessKeyboard(RIGHT, frameCounter.deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-        camera.ProcessKeyboard(DOWN, frameCounter.deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-        camera.ProcessKeyboard(UP, frameCounter.deltaTime);
+    if (fpsMode)
+    {
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+            camera.ProcessKeyboard(FORWARD, frameCounter.deltaTime);
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+            camera.ProcessKeyboard(LEFT, frameCounter.deltaTime);
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+            camera.ProcessKeyboard(BACKWARD, frameCounter.deltaTime);
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+            camera.ProcessKeyboard(RIGHT, frameCounter.deltaTime);
+        if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+            camera.ProcessKeyboard(DOWN, frameCounter.deltaTime);
+        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+            camera.ProcessKeyboard(UP, frameCounter.deltaTime);
+    }
 }
 
-bool firstMouse = true;
 float lastX, lastY;
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 {
@@ -202,13 +228,15 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
     lastX = xpos;
     lastY = ypos;
 
-    if (cursorLocked)
-        camera.ProcessMouseMovement(xoffset, yoffset);
+    auto pan = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_2);
+
+    if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED)
+        camera.ProcessMouseMovement(xoffset, yoffset, !fpsMode, pan);
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    camera.ProcessMouseScroll(yoffset);
+    camera.ProcessMouseScroll(yoffset, !fpsMode);
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)

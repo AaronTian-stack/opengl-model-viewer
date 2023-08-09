@@ -25,41 +25,51 @@ const float ZOOM        =  45.0f;
 class Camera {
     public:
         // camera Attributes
-        glm::vec3 Position;
+        glm::vec3 Position, OrbitPosition;
         glm::vec3 Forward;
         glm::vec3 Up;
         glm::vec3 Right;
         glm::vec3 WorldUp;
 
+        glm::vec3 Target;
+        glm::vec3 TargetSmooth;
+        float TargetDistance = 5.0f;
+        float TargetDistanceSmooth = TargetDistance;
+
         // euler Angles
         float Yaw;
         float Pitch;
+
+        float Theta = 90;
+        float Phi;
 
         // camera options
         float MovementSpeed;
         float MouseSensitivity;
         float Zoom;
+        float ZoomSmooth;
 
-        // constructor with vectors
         Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
 
-        // constructor with scalar values
         Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch);
 
-        // returns the view matrix calculated using Euler Angles and the LookAt Matrix
-        glm::mat4 GetViewMatrix() const;
+        glm::mat4 GetViewMatrix(bool orbit);
 
-        // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
         void ProcessKeyboard(Camera_Movement direction, float deltaTime);
 
-        // processes input received from a mouse input system. Expects the offset value in both the x and y direction.
-        void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true);
+        void ProcessMouseMovement(float xoffset, float yoffset, bool orbit = false, bool pan = false, bool constrainPitch = true);
 
-        // processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
-        void ProcessMouseScroll(float yoffset);
+        void ProcessMouseScroll(float yoffset, bool orbit = false);
+
+        // updates the orbital smoothed values
+        void Update(float delta);
+
+        void Reset(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), float yaw = -90, float pitch = 0);
 
     private:
-        // calculates the front vector from the Camera's (updated) Euler Angles
+        float ThetaSmooth = Theta;
+        float PhiSmooth = Phi;
+
         void updateCameraVectors();
 };
 
