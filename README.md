@@ -1,5 +1,15 @@
 # OpenGL Model Viewer
-Renders .obj files in OpenGL.
+A 3D model viewer that renders .obj files in OpenGL.
+
+## Features
+* Model loading from `.obj` files
+* Smooth orbital camera
+* ImGui control interface
+    * Model translation, rotation, scale
+        * Model turntable animation
+    * Camera controls (aiming reticle, FOV)
+    * Background color
+    * Wireframe mode
 
 ## Video / Screenshots
 
@@ -13,23 +23,28 @@ https://github.com/AaronTian-stack/opengl-model-viewer/assets/84607804/1f709e51-
   </tr>
  </table>
 
-## Model Credits
+## Credits
 
-|  | Link | License |
-| --- | --- | --- |
-| Oshi No Ko | [Sketchfab](https://skfb.ly/oHxLA) | CC Attribution |
+| Models                 | Link | License |
+|------------------------| --- | --- |
 | Spirit Blossom Kindred | [Sketchfab](https://skfb.ly/6UFIA) | CC Attribution |
+| Oshi No Ko             | [Sketchfab](https://skfb.ly/oHxLA) | CC Attribution |
 
 The other bundled models (`cubt.obj` and `plane.obj`) are debug models created by myself.
 
+`shader.cpp` is taken from the [LearnOpenGL](https://learnopengl.com/) tutorial. 
+
+`camera.cpp` is a heavily modified version of the camera class from the same tutorial.
+
 ## Dependencies
 
-| Library | Link |
-| --- | --- |
-| GLFW | [Website](https://www.glfw.org/) |
-| GLM | [Github](https://github.com/g-truc/glm) |
+| Library    | Link                                         |
+|------------|----------------------------------------------|
+| GLFW       | [Website](https://www.glfw.org/)             |
+| glad       | [Website](https://glad.dav1d.de/)            |
+| GLM        | [Github](https://github.com/g-truc/glm)      |
 | OBJ-Loader | [Github](https://github.com/Bly7/OBJ-Loader) |
-
+| ImGui      | [Github](https://github.com/ocornut/imgui)   |
 
 ## Limitations
-* Only supports diffuse materials (no lighting)
+* Only supports diffuse materials/textures (no lighting)
