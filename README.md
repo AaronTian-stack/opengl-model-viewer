@@ -19,7 +19,7 @@ https://github.com/AaronTian-stack/opengl-model-viewer/assets/84607804/f7866b1e-
   <tr>
     <td valign="center"><img width="1136" alt="oshi" src="https://github.com/AaronTian-stack/opengl-model-viewer/assets/84607804/4ef46a4a-2b7f-4dd2-836c-218f1259a221"></td>
     <td valign="center"><img width="1136" alt="preview2" src="https://github.com/AaronTian-stack/opengl-model-viewer/assets/84607804/4fa93e69-b3cd-40f7-b43d-35b2526a5149"></td>
-    <td valign="top"><img width="1136" alt="oshi_squash" src="https://github.com/AaronTian-stack/opengl-model-viewer/assets/84607804/533c0cb2-a65e-4730-b6c3-bdbdca3717c0"> <p align="center"> <sub>squish</sub> </p></td>
+    <td valign="center"><img width="1136" alt="oshi_squash" src="https://github.com/AaronTian-stack/opengl-model-viewer/assets/84607804/533c0cb2-a65e-4730-b6c3-bdbdca3717c0"> <p align="center"> <sub>squish</sub> </p></td>
   </tr>
  </table>
 
