@@ -86,8 +86,6 @@ DrawableMesh::DrawableMesh(GLuint drawMode, objl::Mesh mesh, const char * textur
     // index number (unsigned int)
     this->ind_count = mesh.Indices.size();
 
-    std::cout << mesh.Vertices.at(0).TextureCoordinate.X << std::endl;
-
     glGenVertexArrays(1, &VAO); // create vertex array object
     glBindVertexArray(VAO); // bind vertex array object.
 

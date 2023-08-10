@@ -16,6 +16,8 @@ struct PropertyInspector {
     float rotation[3] = {0, 0, 0};
     float scale[3] = {1, 1, 1};
 
+    float background_color[3] = {0.2f, 0.3f, 0.3f};
+
     bool wireframe;
     bool hideReticle = true;
     bool turntable;

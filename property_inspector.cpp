@@ -10,7 +10,7 @@
 #include "drawable_model.h"
 
 void PropertyInspector::render(Window windowObj, Camera& camera, DrawableModel& model) {
-    bool info = false;
+
     ImGui::SetNextWindowPos(ImVec2(0, 18));
     auto flags = ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove;
 
@@ -32,6 +32,8 @@ void PropertyInspector::render(Window windowObj, Camera& camera, DrawableModel& 
         camera.Reset(glm::vec3(0.0f, 0.0f, 1.0f));
     }
 
+    bool info = false;
+    bool instructions = false;
     if (ImGui::BeginMainMenuBar())
     {
         if (ImGui::MenuItem("Quit"))
@@ -41,24 +43,46 @@ void PropertyInspector::render(Window windowObj, Camera& camera, DrawableModel& 
         if (ImGui::MenuItem("Model Info")) {
             info = true;
         }
-        // dirty hack to get the menu to the right
+        if (ImGui::MenuItem("Instructions")) {
+            instructions = true;
+        }
+        // hack to get the menu to the right
         ImGui::SameLine(ImGui::GetWindowWidth() - 126);
         ImGui::Text("Aaron Tian 2023");
         ImGui::EndMainMenuBar();
     }
 
     if (info)
-    {
-        ImGui::OpenPopup("popup");
-    }
+        ImGui::OpenPopup("info_popup");
 
-    if (ImGui::BeginPopup("popup"))
+    if (instructions)
+        ImGui::OpenPopup("instruction_popup");
+
+    if (ImGui::BeginPopup("info_popup"))
     {
         ImGui::Text("Meshes: %d", model.mesh_count);
         ImGui::Text("Vertex Count: %d", model.vertex_count);
         ImGui::Text("Material Count: %d", model.material_count);
         ImGui::EndPopup();
     }
+
+    if (ImGui::BeginPopup("instruction_popup"))
+    {
+        ImGui::Text("Orbit Mode");
+        ImGui::BulletText("Click and drag to rotate");
+        ImGui::BulletText("Right click and drag to pan");
+        ImGui::BulletText("Scroll to move in/out");
+
+        ImGui::Spacing();
+
+        ImGui::Text("First Person Mode");
+        ImGui::BulletText("WASD QE to move");
+        ImGui::BulletText("Use mouse to aim");
+        ImGui::BulletText("Scroll to zoom");
+        ImGui::EndPopup();
+    }
+
+    ImGui::ColorEdit3("Background Color", &*background_color);
 
     if (ImGui::CollapsingHeader("Model Transform", ImGuiTreeNodeFlags_DefaultOpen))
     {

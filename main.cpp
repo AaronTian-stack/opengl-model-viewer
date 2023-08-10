@@ -40,31 +40,13 @@ int main()
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigWindowsMoveFromTitleBarOnly = true;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
-    // Setup Platform/Renderer backends
-    ImGui_ImplGlfw_InitForOpenGL(windowObj.window, true);          // Second param install_callback=true will install GLFW callbacks and chain to existing ones.
+    ImGui_ImplGlfw_InitForOpenGL(windowObj.window, true);
     ImGui_ImplOpenGL3_Init();
 
     Shader basicShader("shaders/basic.vert", "shaders/basic.frag");
     Shader texShader("shaders/tex.vert", "shaders/tex.frag");
-    Shader texColorShader("shaders/tex_color.vert", "shaders/tex_color.frag");
-
-    float vertices_rect_tex[] = {
-            // positions                        //colors                                    // texture coords
-            0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,   // top right
-            0.5f, -0.5f, 0.0f,   1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,   // bottom right
-            -0.5f, -0.5f, 0.0f,   1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,   // bottom left
-            -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,    // top left
-    };
-    unsigned int indices_rect[] = {
-        0, 1, 3,   // first triangle
-        1, 2, 3    // second triangle
-    };
-
-    //DrawableMesh rect(GL_STATIC_COPY, vertices_rect_tex, sizeof(vertices_rect_tex),
-     //                 indices_rect, sizeof(indices_rect), true, "resources/plane/textures/debug.png");
 
     objl::Loader loader;
     loader.LoadFile("resources/ball.obj");
@@ -93,8 +75,9 @@ int main()
         camera.Update(frameCounter.deltaTime);
 
         frameCounter.update(false);
-        
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+
+        auto color = propertyInspector.background_color;
+        glClearColor(color[0], color[1], color[2], 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         reticleSize = Interpolation::Linear(reticleSize, reticleSizeTarget, 0.1f);
@@ -113,12 +96,6 @@ int main()
         model = glm::scale(model, glm::vec3(scale[0], scale[1], scale[2]));
 
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), windowObj.getAspectRatio(), 0.1f, 100.0f);
-
-        /*texColorShader.use();
-        texColorShader.setMat4("model", glm::mat4(1.0f));
-        texColorShader.setMat4("view", camera.GetViewMatrix(!fpsMode));
-        texColorShader.setMat4("projection", projection);
-        rect.Draw();*/
 
         texShader.use();
         texShader.setMat4("model", model);
