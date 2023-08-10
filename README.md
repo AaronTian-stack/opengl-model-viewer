@@ -13,13 +13,13 @@ A 3D model viewer that renders .obj files in OpenGL.
 
 ## Video / Screenshots
 
-https://github.com/AaronTian-stack/opengl-model-viewer/assets/84607804/1f709e51-316f-48b5-b0d8-60888732cb9f
+https://github.com/AaronTian-stack/opengl-model-viewer/assets/84607804/f7866b1e-c228-41c0-bba3-767dffbf1c9d
 
 <table>
   <tr>
     <td valign="center"><img width="1136" alt="oshi" src="https://github.com/AaronTian-stack/opengl-model-viewer/assets/84607804/4ef46a4a-2b7f-4dd2-836c-218f1259a221"></td>
     <td valign="center"><img width="1136" alt="preview2" src="https://github.com/AaronTian-stack/opengl-model-viewer/assets/84607804/4fa93e69-b3cd-40f7-b43d-35b2526a5149"></td>
-    <td valign="center"><img width="1136" alt="oshi_squash" src="https://github.com/AaronTian-stack/opengl-model-viewer/assets/84607804/533c0cb2-a65e-4730-b6c3-bdbdca3717c0"></td>
+    <td valign="top"><img width="1136" alt="oshi_squash" src="https://github.com/AaronTian-stack/opengl-model-viewer/assets/84607804/533c0cb2-a65e-4730-b6c3-bdbdca3717c0"> <p align="center"> <sub>squish</sub> </p></td>
   </tr>
  </table>
 
@@ -45,6 +45,8 @@ The other bundled models (`cubt.obj` and `plane.obj`) are debug models created b
 | GLM        | [Github](https://github.com/g-truc/glm)      |
 | OBJ-Loader | [Github](https://github.com/Bly7/OBJ-Loader) |
 | ImGui      | [Github](https://github.com/ocornut/imgui)   |
+
+This project uses macOS OpenGL 4.1
 
 ## Limitations
 * Only supports diffuse materials/textures (no lighting)
