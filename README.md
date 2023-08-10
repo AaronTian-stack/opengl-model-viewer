@@ -13,13 +13,13 @@ A 3D model viewer written in C++ that renders `.obj` files using OpenGL.
 
 ## Video / Screenshots
 
-https://github.com/AaronTian-stack/opengl-model-viewer/assets/84607804/f7866b1e-c228-41c0-bba3-767dffbf1c9d
+https://github.com/AaronTian-stack/opengl-model-viewer/assets/84607804/6abf0c46-8ba4-4e96-8ccb-f5b8738f8b19
 
 <table>
   <tr>
-    <td valign="center"><img width="1136" alt="oshi" src="https://github.com/AaronTian-stack/opengl-model-viewer/assets/84607804/4ef46a4a-2b7f-4dd2-836c-218f1259a221"></td>
-    <td valign="center"><img width="1136" alt="preview2" src="https://github.com/AaronTian-stack/opengl-model-viewer/assets/84607804/4fa93e69-b3cd-40f7-b43d-35b2526a5149"></td>
-    <td valign="center"><img width="1136" alt="oshi_squash" src="https://github.com/AaronTian-stack/opengl-model-viewer/assets/84607804/533c0cb2-a65e-4730-b6c3-bdbdca3717c0"> <p align="center"> <sub>squish</sub> </p></td>
+    <td valign="center"> <img width="1136" alt="oshi" src="https://github.com/AaronTian-stack/opengl-model-viewer/assets/84607804/a869b98b-30f8-47b4-9d9b-1d1ae0646086"> </td>
+    <td valign="center"> <img width="1136" alt="preview" src="https://github.com/AaronTian-stack/opengl-model-viewer/assets/84607804/322d2d3e-1615-41c7-8504-17d649190e3e"> </td>
+    <td valign="center"> <img width="1136" alt="oshi_squash" src="https://github.com/AaronTian-stack/opengl-model-viewer/assets/84607804/6aecdeb5-e630-4633-b0b6-b2a235612727"> <p align="center"> <sub>squish</sub> </p> </td>
   </tr>
  </table>
 
