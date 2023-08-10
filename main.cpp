@@ -5,15 +5,15 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 
-#include "frame_counter.h"
-#include "shader.h"
-#include "window.h"
-#include "camera.h"
-#include "property_inspector.h"
-#include "drawable_mesh.h"
-#include "primitives.h"
-#include "drawable_model.h"
-#include "interpolation.h"
+#include "src/frame_counter.h"
+#include "src/shader.h"
+#include "src/window.h"
+#include "src/camera.h"
+#include "src/property_inspector.h"
+#include "src/drawable_mesh.h"
+#include "src/primitives.h"
+#include "src/drawable_model.h"
+#include "src/interpolation.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
