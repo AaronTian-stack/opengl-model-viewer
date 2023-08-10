@@ -1,5 +1,5 @@
 # OpenGL Model Viewer
-A 3D model viewer written in C++ that renders .obj files using OpenGL.
+A 3D model viewer written in C++ that renders `.obj` files using OpenGL.
 
 ## Features
 * Model loading from `.obj` files
