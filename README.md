@@ -46,7 +46,7 @@ The other bundled models (`cubt.obj` and `plane.obj`) are debug models created b
 | OBJ-Loader | [Github](https://github.com/Bly7/OBJ-Loader) |
 | ImGui      | [Github](https://github.com/ocornut/imgui)   |
 
-This project uses macOS OpenGL 4.1
+This project uses macOS OpenGL 4.1 and was built with CMake.
 
 ## Limitations
 * Only supports diffuse materials/textures (no lighting)
