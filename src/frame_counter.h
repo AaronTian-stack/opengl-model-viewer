@@ -1,7 +1,5 @@
 ﻿#pragma once
 
-#include <string>
-
 struct FrameCounter
 {
     int fps;

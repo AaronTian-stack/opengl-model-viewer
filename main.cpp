@@ -52,7 +52,11 @@ int main()
     loader.LoadFile("resources/ball.obj");
     DrawableMesh ball(GL_STATIC_DRAW, loader.LoadedMeshes[0]);
 
-    DrawableModel drawableModel(GL_STATIC_DRAW, "resources/kind/kind.obj", "resources/kind/textures/");
+    DrawableModel drawableModel(GL_STATIC_DRAW,
+                                "resources/kind/kind.obj", "resources/kind/textures/");
+
+    //DrawableModel drawableModel(GL_STATIC_DRAW,
+    //                            "resources/oshi/oshi.obj", "resources/oshi/textures/");
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
@@ -101,6 +105,8 @@ int main()
         texShader.setMat4("model", model);
         texShader.setMat4("view", camera.GetViewMatrix(!fpsMode));
         texShader.setMat4("projection", projection);
+        const glm::vec3 camPos = fpsMode ? camera.Position : camera.OrbitPosition;
+        texShader.setVec3("camPos", camPos);
         drawableModel.Draw();
 
         basicShader.use();
@@ -171,18 +177,21 @@ void processInput(GLFWwindow* window)
 
     if (fpsMode)
     {
+        float dt = frameCounter.deltaTime;
+        if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+            dt *= 2.5f;
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-            camera.ProcessKeyboard(FORWARD, frameCounter.deltaTime);
+            camera.ProcessKeyboard(FORWARD, dt);
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-            camera.ProcessKeyboard(LEFT, frameCounter.deltaTime);
+            camera.ProcessKeyboard(LEFT, dt);
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-            camera.ProcessKeyboard(BACKWARD, frameCounter.deltaTime);
+            camera.ProcessKeyboard(BACKWARD, dt);
         if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-            camera.ProcessKeyboard(RIGHT, frameCounter.deltaTime);
+            camera.ProcessKeyboard(RIGHT, dt);
         if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-            camera.ProcessKeyboard(DOWN, frameCounter.deltaTime);
+            camera.ProcessKeyboard(DOWN, dt);
         if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-            camera.ProcessKeyboard(UP, frameCounter.deltaTime);
+            camera.ProcessKeyboard(UP, dt);
     }
 }
 

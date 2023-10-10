@@ -9,7 +9,10 @@
 /**
  * @brief Construct a new Mesh object with vertex and index data.
 */
-DrawableMesh::DrawableMesh(GLuint drawMode, float *vertices, unsigned int vert_count, unsigned int *indices, unsigned int ind_count, bool color, const char *texture_path)
+DrawableMesh::DrawableMesh(GLuint drawMode,
+                           float *vertices, unsigned int vert_count,
+                           unsigned int *indices, unsigned int ind_count,
+                           bool color, const char *texture_path)
 {
     this->vert_count = vert_count;
     this->ind_count = ind_count;
@@ -33,6 +36,7 @@ DrawableMesh::DrawableMesh(GLuint drawMode, float *vertices, unsigned int vert_c
 	const unsigned int v_attribute = 0;
     const unsigned int c_attribute = 1;
     const unsigned int t_attribute = 2;
+    const unsigned int n_attribute = 3;
 	// tell OpenGL how to interpret vertex array (for the vertex shader). send vertices of format float3 (size arg)
 
     if (texture_path != nullptr)
@@ -52,12 +56,16 @@ DrawableMesh::DrawableMesh(GLuint drawMode, float *vertices, unsigned int vert_c
             vertex_color_stride += 2;
             // size 2 for xy texture coordinates
             // move 8 each times stride, start at 6 since position and color are 6 floats
-            glVertexAttribPointer(t_attribute, 2, GL_FLOAT, GL_FALSE, vertex_color_stride * sizeof(float), (void*)(7 * sizeof(float)));
+            glVertexAttribPointer(t_attribute, 2,
+                                  GL_FLOAT, GL_FALSE,
+                                  vertex_color_stride * sizeof(float), (void*)(7 * sizeof(float)));
             glEnableVertexAttribArray(t_attribute);
         }
 
         // rgba
-        glVertexAttribPointer(c_attribute, 4, GL_FLOAT, GL_FALSE, vertex_color_stride * sizeof(float), (void*)(3 * sizeof(float)));
+        glVertexAttribPointer(c_attribute, 4,
+                              GL_FLOAT, GL_FALSE,
+                              vertex_color_stride * sizeof(float), (void*)(3 * sizeof(float)));
         // for color attribute in the shader
         glEnableVertexAttribArray(c_attribute);
 	}
@@ -73,7 +81,9 @@ DrawableMesh::DrawableMesh(GLuint drawMode, float *vertices, unsigned int vert_c
 	}
 	// enable vertex attribute (tell which location we send our data to in the vertex shader)
     // assuming this is 0 it is the aPos attribute
-    glVertexAttribPointer(v_attribute, 3, GL_FLOAT, GL_FALSE, vertex_color_stride * sizeof(float), (void*)0);
+    glVertexAttribPointer(v_attribute, 3,
+                          GL_FLOAT, GL_FALSE,
+                          vertex_color_stride * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(v_attribute);
 }
 
@@ -101,6 +111,7 @@ DrawableMesh::DrawableMesh(GLuint drawMode, objl::Mesh mesh, const char * textur
 
     const unsigned int v_attribute = 0;
     const unsigned int t_attribute = 1;
+    const unsigned int n_attribute = 2;
 
     auto file = mesh.MeshMaterial.map_Kd;
     // for now only use the diffuse texture. since the setup can only support one texture
@@ -130,11 +141,19 @@ DrawableMesh::DrawableMesh(GLuint drawMode, objl::Mesh mesh, const char * textur
         LoadTexture("resources/wall.png");
     }
 
-    glVertexAttribPointer(t_attribute, 2, GL_FLOAT, GL_FALSE, sizeof(objl::Vertex), (void*)offsetof(objl::Vertex, TextureCoordinate));
+    glVertexAttribPointer(t_attribute, 2,
+                          GL_FLOAT, GL_FALSE,
+                          sizeof(objl::Vertex), (void*)offsetof(objl::Vertex, TextureCoordinate));
     glEnableVertexAttribArray(t_attribute);
 
-    glVertexAttribPointer(v_attribute, 3, GL_FLOAT, GL_FALSE, sizeof(objl::Vertex), (void*)0);
+    glVertexAttribPointer(v_attribute, 3,
+                          GL_FLOAT, GL_FALSE, sizeof(objl::Vertex), (void*)0);
     glEnableVertexAttribArray(v_attribute);
+
+    glVertexAttribPointer(n_attribute, 3,
+                          GL_FLOAT, GL_FALSE,
+                          sizeof(objl::Vertex), (void*)offsetof(objl::Vertex, Normal));
+    glEnableVertexAttribArray(n_attribute);
 }
 
 void DrawableMesh::Draw() const
@@ -154,8 +173,8 @@ void DrawableMesh::LoadTexture(const char *texture_path) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     // min mag filers
     // GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     int width, height, nrChannels;
     unsigned char *data = stbi_load(texture_path, &width, &height, &nrChannels, 0);
