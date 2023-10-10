@@ -3,6 +3,7 @@ A 3D model viewer written in C++ that renders `.obj` files using OpenGL.
 
 ## Features
 * Model loading from `.obj` files
+    * Diffuse texture materials
 * Smooth orbital camera
 * ImGui control interface
     * Model translation, rotation, scale
