@@ -2,21 +2,10 @@
 #include <iostream>
 #include "interpolation.h"
 
-Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch) : Forward(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
+Camera::Camera(glm::vec3 position, float yaw, float pitch)
+               : Position(position), Yaw(yaw), Pitch(pitch),
+               MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
 {
-    Position = position;
-    WorldUp = up;
-    Yaw = yaw;
-    Pitch = pitch;
-    updateCameraVectors();
-}
-
-Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch) : Forward(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
-{
-    Position = glm::vec3(posX, posY, posZ);
-    WorldUp = glm::vec3(upX, upY, upZ);
-    Yaw = yaw;
-    Pitch = pitch;
     updateCameraVectors();
 }
 
@@ -104,11 +93,7 @@ void Camera::ProcessMouseScroll(float yoffset, bool orbit)
 {
     if (orbit)
     {
-        float distance = glm::distance(Position, Target);
-        if (distance > 0.5f || yoffset > 0.0f)
-        {
-            TargetDistance += yoffset * 0.2f;
-        }
+        TargetDistance += yoffset * 0.2f;
         TargetDistance = std::clamp(TargetDistance, 0.5f, 100.0f);
     }
     else
@@ -124,7 +109,8 @@ void Camera::ProcessMouseScroll(float yoffset, bool orbit)
     }
 }
 
-void Camera::Update(float delta) {
+void Camera::Update(float delta)
+{
     float a = 10.0f * delta;
     ThetaSmooth = Interpolation::Linear(ThetaSmooth, Theta, a);
     PhiSmooth = Interpolation::Linear(PhiSmooth, Phi, a);
@@ -139,7 +125,8 @@ void Camera::Update(float delta) {
     TargetDistanceSmooth = Interpolation::Linear(TargetDistanceSmooth, TargetDistance, a);
 }
 
-void Camera::updateCameraVectors() {
+void Camera::updateCameraVectors()
+{
     Forward.x = cos(glm::radians(Yaw)) * cos(glm::radians(Pitch));
     Forward.y = sin(glm::radians(Pitch));
     Forward.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
@@ -149,13 +136,15 @@ void Camera::updateCameraVectors() {
     Up    = glm::normalize(glm::cross(Right, Forward));
 }
 
-void Camera::Reset(glm::vec3 position, float yaw, float pitch) {
-    Position = position;
+void Camera::Reset(glm::vec3 position, float yaw, float pitch, float targetDistance)
+{
     Yaw = yaw;
     Pitch = pitch;
-    Theta = 90;
+    Theta = pitch + 90;
     Phi = 0;
     Zoom = 45;
-    Target = glm::vec3(0);
+    Target = position;
+    TargetDistance = targetDistance;
+    Position = position - TargetDistance * Forward;
     updateCameraVectors();
 }

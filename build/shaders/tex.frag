@@ -17,7 +17,7 @@ void main()
     float dot = dot(normalize(normal), normalize(light));
     float diffuse = clamp(dot, 0.0, 1.0) + 0.3;
     // specular
-    float spec = max(pow(dot, 4000), 0);
+    float spec = max(pow(dot, 6000), 0);
     vec3 specular = vec3(247, 250, 202) / 255 * spec;
 
     float level = floor(diffuse * levels);

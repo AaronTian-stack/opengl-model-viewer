@@ -22,8 +22,10 @@ struct PropertyInspector {
     bool hideReticle = true;
     bool turntable;
 
-    void render(Window windowObj, Camera& camera, DrawableModel& model);
+    int m_current;
+    int s_current;
 
+    void render(Window windowObj, Camera &camera, std::vector<DrawableModel*> models);
 };
 
 

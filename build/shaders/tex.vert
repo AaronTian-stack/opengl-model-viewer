@@ -14,8 +14,9 @@ out vec3 light;
 
 void main()
 {
-    gl_Position = projection * view * model * vec4(aPos, 1.0);
+    vec4 modelt = model * vec4(aPos, 1.0);
+    gl_Position = projection * view * modelt;
     TexCoord = aTexCoord;
-    normal = aNor;
-    light = camPos - aPos;
+    normal = transpose(inverse(mat3(model))) * aNor;
+    light = camPos - modelt.xyz;
 }

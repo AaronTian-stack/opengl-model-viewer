@@ -9,27 +9,26 @@
 #include "imgui/imgui.h"
 #include "drawable_model.h"
 
-void PropertyInspector::render(Window windowObj, Camera& camera, DrawableModel& model) {
+void PropertyInspector::render(Window windowObj, Camera& camera,
+                               std::vector<DrawableModel*> models) {
 
     ImGui::SetNextWindowPos(ImVec2(0, 18));
     auto flags = ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove;
 
     ImGui::Begin("Model Viewer", nullptr, flags);
 
-    ImGui::Text("Press ~ to toggle camera mode\n(Orbit / First Person)");
+    ImGui::Text("Press ~ to toggle camera mode");
+    ImGui::Text("(Orbit / First Person)");
 
     ImGui::Checkbox("Hide Reticle", &hideReticle);
 
-    if (ImGui::Checkbox("Wireframe", &wireframe))
-    {
-        glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
-    }
-
     ImGui::SliderFloat("FOV", &camera.Zoom, 5.0f, 90.0f);
+
+    auto &model = *models[m_current];
 
     if (ImGui::Button("Reset Camera"))
     {
-        camera.Reset(glm::vec3(0.0f, 0.0f, 1.0f));
+        camera.Reset(model.avg_pos, -90, -10);
     }
 
     bool info = false;
@@ -40,12 +39,13 @@ void PropertyInspector::render(Window windowObj, Camera& camera, DrawableModel& 
         {
             glfwSetWindowShouldClose(windowObj.window, true);
         }
-        if (ImGui::MenuItem("Model Info")) {
+
+        if (ImGui::MenuItem("Model Info"))
             info = true;
-        }
-        if (ImGui::MenuItem("Instructions")) {
+
+        if (ImGui::MenuItem("Instructions"))
             instructions = true;
-        }
+
         // hack to get the menu to the right
         ImGui::SameLine(ImGui::GetWindowWidth() - 126);
         ImGui::Text("Aaron Tian 2023");
@@ -92,5 +92,23 @@ void PropertyInspector::render(Window windowObj, Camera& camera, DrawableModel& 
         ImGui::Checkbox("Turntable", &turntable);
     }
 
+    ImGui::End();
+
+    ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x, 18), 0, ImVec2(1.0f, 0));
+    ImGui::Begin("Visual Options", nullptr, flags);
+    if (ImGui::Checkbox("Wireframe", &wireframe))
+    {
+        glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
+    }
+    if (ImGui::Combo("Model", &m_current,
+                     "House\0Tea\0Kind\0Oshi\0Cube\0Plane\0"))
+    {
+        camera.Reset(models[m_current]->avg_pos, -90, -10);
+    }
+    if (ImGui::Combo("Shader", &s_current,
+                     "Flat\0Blinn-Phong\0Toon\0Gradient\0Screen Door"))
+    {
+
+    }
     ImGui::End();
 }

@@ -16,10 +16,16 @@ DrawableModel::DrawableModel(GLuint drawMode, const char * objPath, const char *
         this->material_count = loader.LoadedMaterials.size();
         std::cout << "Number of Meshes in Model: " << loader.LoadedMeshes.size() << std::endl;
         // make drawable mesh for each
-        for (const auto& mesh : loader.LoadedMeshes)
+        for (const auto &mesh : loader.LoadedMeshes)
         {
+            for (const auto &vert : mesh.Vertices)
+            {
+                const auto &v = vert.Position;
+                avg_pos += glm::vec3(v.X, v.Y, v.Z);
+            }
             this->meshes.emplace_back(drawMode, mesh, texturesFolder);
         }
+        avg_pos /= this->vertex_count;
     }
     else
     {

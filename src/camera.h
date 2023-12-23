@@ -25,10 +25,10 @@ class Camera {
     public:
         // camera Attributes
         glm::vec3 Position, OrbitPosition;
-        glm::vec3 Forward;
+        glm::vec3 Forward = glm::vec3(0.0f, 0.0f, -1.0f);
         glm::vec3 Up;
         glm::vec3 Right;
-        glm::vec3 WorldUp;
+        glm::vec3 WorldUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
         glm::vec3 Target;
         glm::vec3 TargetSmooth;
@@ -48,9 +48,8 @@ class Camera {
         float Zoom;
         float ZoomSmooth;
 
-        Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
-
-        Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch);
+        Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f),
+               float yaw = YAW, float pitch = PITCH);
 
         glm::mat4 GetViewMatrix(bool orbit);
 
@@ -63,7 +62,7 @@ class Camera {
         // updates the orbital smoothed values
         void Update(float delta);
 
-        void Reset(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), float yaw = -90, float pitch = 0);
+        void Reset(glm::vec3 position, float yaw = -90, float pitch = 0, float targetDistance = 5);
 
     private:
         float ThetaSmooth = Theta;

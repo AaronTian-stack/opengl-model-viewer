@@ -26,7 +26,7 @@ Window windowObj(1024, 768,
                  mouse_callback,
                  scroll_callback,
                  toggleCursor);
-Camera camera(glm::vec3(0.0f, 0.0f, 1.0f));
+Camera camera;
 FrameCounter frameCounter;
 bool fpsMode;
 
@@ -46,21 +46,39 @@ int main()
     ImGui_ImplOpenGL3_Init();
 
     Shader basicShader("shaders/basic.vert", "shaders/basic.frag");
+    Shader flatShader("shaders/tex.vert", "shaders/tex_flat.frag");
+    Shader blinnShader("shaders/tex.vert", "shaders/tex_blinn.frag");
     Shader texShader("shaders/tex.vert", "shaders/tex.frag");
+    Shader gradShader("shaders/tex.vert", "shaders/tex_grad.frag");
+    Shader ditherShader("shaders/tex.vert", "shaders/tex_dither.frag");
+
+    std::vector<Shader*> shaders = {&flatShader, &blinnShader, &texShader, &gradShader, &ditherShader};
 
     objl::Loader loader;
     loader.LoadFile("resources/ball.obj");
     DrawableMesh ball(GL_STATIC_DRAW, loader.LoadedMeshes[0]);
 
-    DrawableModel drawableModel(GL_STATIC_DRAW,
+    DrawableModel house(GL_STATIC_DRAW,
+                      "resources/house/house.obj", "resources/house/textures/");
+
+    DrawableModel tea(GL_STATIC_DRAW,
+                        "resources/tea/tea.obj", "resources/tea/textures/");
+
+    DrawableModel kind(GL_STATIC_DRAW,
                                 "resources/kind/kind.obj", "resources/kind/textures/");
 
-    //DrawableModel drawableModel(GL_STATIC_DRAW,
-    //                            "resources/oshi/oshi.obj", "resources/oshi/textures/");
+    DrawableModel oshi(GL_STATIC_DRAW,
+                                "resources/oshi/oshi.obj", "resources/oshi/textures/");
+
+    DrawableModel cube(GL_STATIC_DRAW,
+                       "resources/cubt/cubt.obj", "resources/cubt/textures/");
+
+    DrawableModel plane(GL_STATIC_DRAW,
+                       "resources/plane/plane.obj", "resources/plane/textures/");
+
+    std::vector<DrawableModel*> models = {&house, &tea, &kind, &oshi, &cube, &plane};
 
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     PropertyInspector propertyInspector;
 
@@ -74,7 +92,7 @@ int main()
 
         processInput(windowObj.window);
 
-        propertyInspector.render(windowObj, camera, drawableModel);
+        propertyInspector.render(windowObj, camera, models);
 
         camera.Update(frameCounter.deltaTime);
 
@@ -99,15 +117,18 @@ int main()
         auto scale = propertyInspector.scale;
         model = glm::scale(model, glm::vec3(scale[0], scale[1], scale[2]));
 
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), windowObj.getAspectRatio(), 0.1f, 100.0f);
+        glm::mat4 projection = glm::perspective(
+                glm::radians(camera.Zoom), windowObj.getAspectRatio(), 0.1f, 1000.0f);
 
-        texShader.use();
-        texShader.setMat4("model", model);
-        texShader.setMat4("view", camera.GetViewMatrix(!fpsMode));
-        texShader.setMat4("projection", projection);
+        Shader curShader = *shaders[propertyInspector.s_current];
+        curShader.use();
+        gradShader.setFloat("time", glfwGetTime());
+        curShader.setMat4("model", model);
+        curShader.setMat4("view", camera.GetViewMatrix(!fpsMode));
+        curShader.setMat4("projection", projection);
         const glm::vec3 camPos = fpsMode ? camera.Position : camera.OrbitPosition;
-        texShader.setVec3("camPos", camPos);
-        drawableModel.Draw();
+        curShader.setVec3("camPos", camPos);
+        models[propertyInspector.m_current]->Draw();
 
         basicShader.use();
         basicShader.setMat4("view", camera.GetViewMatrix(!fpsMode));

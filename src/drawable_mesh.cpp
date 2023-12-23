@@ -160,7 +160,7 @@ void DrawableMesh::Draw() const
 {
     glBindTexture(GL_TEXTURE_2D, texture);
 	glBindVertexArray(VAO); // note: unbind by using 0
-	glDrawElements(GL_TRIANGLES, ind_count, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, ind_count, GL_UNSIGNED_INT, nullptr);
 }
 
 void DrawableMesh::LoadTexture(const char *texture_path) {
