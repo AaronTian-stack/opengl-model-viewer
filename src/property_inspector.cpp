@@ -17,8 +17,13 @@ void PropertyInspector::render(Window windowObj, Camera& camera,
 
     ImGui::Begin("Model Viewer", nullptr, flags);
 
+    ImGui::Text("FPS: %f", ImGui::GetIO().Framerate);
+    ImGui::Text("Frame Time: %f ms", ImGui::GetIO().DeltaTime);
+    ImGui::Separator();
+
     ImGui::Text("Press ~ to toggle camera mode");
     ImGui::Text("(Orbit / First Person)");
+    ImGui::Separator();
 
     ImGui::Checkbox("Hide Reticle", &hideReticle);
 
@@ -101,7 +106,7 @@ void PropertyInspector::render(Window windowObj, Camera& camera,
         glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
     }
     if (ImGui::Combo("Model", &m_current,
-                     "House\0Tea\0Kind\0Oshi\0Cube\0Plane\0"))
+                     "Kind\0Oshi\0House\0Tea\0Cube\0Plane\0"))
     {
         camera.Reset(models[m_current]->avg_pos, -90, -10);
     }

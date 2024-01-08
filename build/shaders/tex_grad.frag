@@ -11,14 +11,7 @@ uniform float time;
 void main()
 {
     vec4 texColor = texture(ourTexture, TexCoord);
-
-    float alpha = abs(sin(time));
-
-    float dot = dot(normalize(normal), normalize(light));
-    const vec3 a  = vec3(0.5);
-    const vec3 b = vec3(0.5);
-    const vec3 c = vec3(2, 1, 0);
-    const vec3 d = vec3(0.5, 0.2, 0.25);
-
-    FragColor = vec4(a + b * cos(6.28 * (c * dot + d) + time), 1.0);
+    float d = max(dot(normalize(normal), normalize(light)), 0);
+    vec3 grad = vec3(0.5) + vec3(0.5) * cos(6.28 * (vec3(2, 1, 0) * d + vec3(0.5, 0.2, 0.25)) + time * 3.0);
+    FragColor = vec4(mix(texColor.rgb, grad, 0.2), 1.0);
 }

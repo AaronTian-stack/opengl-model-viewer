@@ -76,7 +76,7 @@ int main()
     DrawableModel plane(GL_STATIC_DRAW,
                        "resources/plane/plane.obj", "resources/plane/textures/");
 
-    std::vector<DrawableModel*> models = {&house, &tea, &kind, &oshi, &cube, &plane};
+    std::vector<DrawableModel*> models = {&kind, &oshi, &house, &tea, &cube, &plane};
 
     glEnable(GL_DEPTH_TEST);
 
@@ -84,8 +84,6 @@ int main()
 
     while (!glfwWindowShouldClose(windowObj.window))
     {
-        glfwSetWindowTitle(windowObj.window, ("OpenGL Model Viewer | FPS: " + std::to_string(frameCounter.fps)).c_str());
-
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();

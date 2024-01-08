@@ -23,7 +23,5 @@ void main()
     float level = floor(diffuse * levels);
     float intensity = sin(level / levels) + 0.2;
 
-    //FragColor = vec4(texColor.rgb * diffuse + specular, 1.0);
     FragColor = vec4((texColor.rgb + specular) * intensity, 1.0);
-    //FragColor = texColor;
 }
