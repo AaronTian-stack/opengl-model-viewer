@@ -15,9 +15,8 @@ A 3D model viewer written in C++ that renders `.obj` files using OpenGL.
  * Windows and macOS support
 
 ## Video / Screenshots
-
-https://github.com/AaronTian-stack/opengl-model-viewer/assets/84607804/6abf0c46-8ba4-4e96-8ccb-f5b8738f8b19
-
+<img width="1136" alt="image" src="https://github.com/AaronTian-stack/opengl-model-viewer/assets/84607804/ba3491d0-77ca-4f1e-bc7c-30c9aaa24446">
+<!-- https://github.com/AaronTian-stack/opengl-model-viewer/assets/84607804/6abf0c46-8ba4-4e96-8ccb-f5b8738f8b19 -->
 <table>
   <tr>
     <td valign="center"> <img width="1136" alt="oshi" src="https://github.com/AaronTian-stack/opengl-model-viewer/assets/84607804/a869b98b-30f8-47b4-9d9b-1d1ae0646086"> <p align="center"> oshi.obj/mtl </p> </td>
@@ -57,6 +56,3 @@ The other bundled models (`cubt.obj` and `plane.obj`) are debug models created b
 | ImGui      | [Github](https://github.com/ocornut/imgui)   |
 
 This project was built with CMake.
-
-## Limitations
-* Only supports diffuse materials/textures (no lighting)
