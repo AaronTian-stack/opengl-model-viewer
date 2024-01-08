@@ -13,7 +13,6 @@
 #include "src/drawable_mesh.h"
 #include "src/primitives.h"
 #include "src/drawable_model.h"
-#include "src/interpolation.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
@@ -100,7 +99,7 @@ int main()
         glClearColor(color[0], color[1], color[2], 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        reticleSize = Interpolation::Linear(reticleSize, reticleSizeTarget, 0.1f);
+        reticleSize = glm::mix(reticleSize, reticleSizeTarget, 0.1f);
 
         glm::mat4 model = glm::mat4(1.0f);
         auto position = propertyInspector.position;
@@ -109,7 +108,7 @@ int main()
         model = glm::rotate(model, glm::radians(rotation[0]), glm::vec3(1.0f, 0.0f, 0.0f));
         if (propertyInspector.turntable)
             rotation[1] += frameCounter.deltaTime * 10.0f;
-        rotation[1] = std::fmodf(rotation[1], 360.0f);
+        rotation[1] = fmodf(rotation[1], 360.0f);
         model = glm::rotate(model, glm::radians(rotation[1]), glm::vec3(0.0f, 1.0f, 0.0f));
         model = glm::rotate(model, glm::radians(rotation[2]), glm::vec3(0.0f, 0.0f, 1.0f));
         auto scale = propertyInspector.scale;

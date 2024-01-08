@@ -1,6 +1,6 @@
 #include "camera.h"
 #include <iostream>
-#include "interpolation.h"
+#include <functional>
 
 Camera::Camera(glm::vec3 position, float yaw, float pitch)
                : Position(position), Yaw(yaw), Pitch(pitch),
@@ -112,9 +112,9 @@ void Camera::ProcessMouseScroll(float yoffset, bool orbit)
 void Camera::Update(float delta)
 {
     float a = 10.0f * delta;
-    ThetaSmooth = Interpolation::Linear(ThetaSmooth, Theta, a);
-    PhiSmooth = Interpolation::Linear(PhiSmooth, Phi, a);
-    ZoomSmooth = Interpolation::Linear(ZoomSmooth, Zoom, a);
+    ThetaSmooth = glm::mix(ThetaSmooth, Theta, a);
+    PhiSmooth = glm::mix(PhiSmooth, Phi, a);
+    ZoomSmooth = glm::mix(ZoomSmooth, Zoom, a);
 
     TargetSmooth = glm::vec3(
         TargetSmooth.x + (Target.x - TargetSmooth.x) * a,
@@ -122,7 +122,7 @@ void Camera::Update(float delta)
         TargetSmooth.z + (Target.z - TargetSmooth.z) * a
     );
 
-    TargetDistanceSmooth = Interpolation::Linear(TargetDistanceSmooth, TargetDistance, a);
+    TargetDistanceSmooth = glm::mix(TargetDistanceSmooth, TargetDistance, a);
 }
 
 void Camera::updateCameraVectors()

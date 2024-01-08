@@ -18,11 +18,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${dir}/build)
 #Include library files
 include_directories(dependencies/include)
 
-# copy the assets so the program can read them
-# THIS DOESNT REPLACE THE FILE!!!
-#file(COPY resources DESTINATION ${dir}/build)
-#file(COPY shaders DESTINATION ${dir}/build)
-
 add_executable(opengl-model-viewer ${SOURCE_FILES} ${IMGUI_SOURCE_FILES} ${IMGUI_HEADERS} main.cpp)
 
-target_link_libraries(opengl-model-viewer ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/library/libglfw.3.3.dylib)
+if(APPLE)
+    target_link_libraries(opengl-model-viewer ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/library/libglfw.3.3.dylib)
+else ()
+    target_link_libraries(opengl-model-viewer ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/glfw3.dll)
+endif ()

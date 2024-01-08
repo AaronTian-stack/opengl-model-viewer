@@ -10,7 +10,7 @@
 #include "drawable_model.h"
 
 void PropertyInspector::render(Window windowObj, Camera& camera,
-                               std::vector<DrawableModel*> models) {
+                               std::vector<DrawableModel*> &models) {
 
     ImGui::SetNextWindowPos(ImVec2(0, 18));
     auto flags = ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove;
@@ -87,7 +87,7 @@ void PropertyInspector::render(Window windowObj, Camera& camera,
         ImGui::EndPopup();
     }
 
-    ImGui::ColorEdit3("Background Color", &*background_color);
+    ImGui::ColorEdit3("Background Color", background_color);
 
     if (ImGui::CollapsingHeader("Model Transform", ImGuiTreeNodeFlags_DefaultOpen))
     {
@@ -111,7 +111,7 @@ void PropertyInspector::render(Window windowObj, Camera& camera,
         camera.Reset(models[m_current]->avg_pos, -90, -10);
     }
     if (ImGui::Combo("Shader", &s_current,
-                     "Flat\0Blinn-Phong\0Toon\0Gradient\0Screen Door"))
+                     "Flat\0Blinn-Phong\0Toon\0Gradient\0Screen Door\0"))
     {
 
     }

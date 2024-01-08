@@ -18,14 +18,14 @@ struct PropertyInspector {
 
     float background_color[3] = {0.2f, 0.3f, 0.3f};
 
-    bool wireframe;
+    bool wireframe = false;
     bool hideReticle = true;
-    bool turntable;
+    bool turntable = false;
 
-    int m_current;
-    int s_current;
+    int m_current = 0;
+    int s_current = 0;
 
-    void render(Window windowObj, Camera &camera, std::vector<DrawableModel*> models);
+    void render(Window windowObj, Camera &camera, std::vector<DrawableModel*> &models);
 };
 
 
