@@ -5,12 +5,14 @@ A 3D model viewer written in C++ that renders `.obj` files using OpenGL.
 * Model loading from `.obj` files
     * Diffuse texture materials
 * Smooth orbital camera
+* A few shaders
 * ImGui control interface
     * Model translation, rotation, scale
         * Model turntable animation
     * Camera controls (aiming reticle, FOV)
     * Background color
     * Wireframe mode
+ * Windows and macOS support
 
 ## Video / Screenshots
 
@@ -30,12 +32,19 @@ https://github.com/AaronTian-stack/opengl-model-viewer/assets/84607804/6abf0c46-
 |------------------------| --- | --- |
 | Spirit Blossom Kindred | [Sketchfab](https://skfb.ly/6UFIA) | CC Attribution |
 | Oshi No Ko             | [Sketchfab](https://skfb.ly/oHxLA) | CC Attribution |
+| Fiesta Tea             | [Sketchfab](https://sketchfab.com/3d-models/fiesta-tea-8bde490c80444157b4545471d067423c) | CC Attribution |
+| Painterly Cottage      | [Sketchfab](https://sketchfab.com/3d-models/painterly-cottage-0772aec70d584c60a27000af5f6c1ef4) | CC Attribution - Non-commercial |
 
 The other bundled models (`cubt.obj` and `plane.obj`) are debug models created by myself.
 
 `shader.cpp` is taken from the [LearnOpenGL](https://learnopengl.com/) tutorial. 
 
 `camera.cpp` is a heavily modified version of the camera class from the same tutorial.
+
+## References
+[learnopengl](https://learnopengl.com/)
+
+[inigo quilez](https://iquilezles.org/articles/palettes/)
 
 ## Dependencies
 
@@ -47,7 +56,7 @@ The other bundled models (`cubt.obj` and `plane.obj`) are debug models created b
 | OBJ-Loader | [Github](https://github.com/Bly7/OBJ-Loader) |
 | ImGui      | [Github](https://github.com/ocornut/imgui)   |
 
-This project uses macOS OpenGL 4.1 and was built with CMake.
+This project was built with CMake.
 
 ## Limitations
 * Only supports diffuse materials/textures (no lighting)
