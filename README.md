@@ -1,5 +1,5 @@
 # OpenGL Model Viewer
-A 3D model viewer written in C++ that renders `.obj` files using OpenGL.
+A 3D model viewer written in C++ that renders `.obj` files using OpenGL. This was my first ever OpenGL project and is old, you should check out my more recent (and much more advanced) [Vulkan Renderer](https://github.com/AaronTian-stack/qhenki-renderer).
 
 ## Features
 * Model loading from `.obj` files
